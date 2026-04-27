@@ -1,147 +1,213 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Precision Step Fit Pro | Arvind Kumar Shukla</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --brand-primary: #2563eb;
+            --bg-dark: #0b1120;
+        }
+
         body { 
-            background-color: #0b1120; 
+            background-color: var(--bg-dark); 
             font-family: 'Outfit', sans-serif; 
             color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
+
         .glass-card { 
-            background: rgba(30, 41, 59, 0.7); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            background: rgba(30, 41, 59, 0.6); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
+
         .active-tab { 
-            background-color: #2563eb; 
+            background-color: var(--brand-primary); 
             color: white; 
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); 
         }
+
         .voice-pulse { 
             animation: pulse 1.5s infinite; 
         }
+
         @keyframes pulse { 
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 
-            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); } 
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
         }
-        .safety-badge { 
-            font-size: 9px; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            background: rgba(34, 197, 94, 0.2); 
-            color: #4ade80; 
-            display: inline-block; 
-            margin-top: 4px; 
+
+        .input-container {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
         }
-        tr:hover { background: rgba(59, 130, 246, 0.05); }
+
+        .input-container:focus-within {
+            border-color: var(--brand-primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Hide scrollbars */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Floating FAB */
+        .voice-fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+        }
+
+        .status-toast {
+            position: fixed;
+            bottom: 6rem;
+            right: 1.5rem;
+            background: #1e293b;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid #334155;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .status-toast.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </div>
     </style>
 </head>
-<body class="min-h-screen py-8 px-4 flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
 
-    <div class="max-w-2xl w-full">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent tracking-tighter uppercase">Precision Step Fit</h1>
-            <p class="text-slate-500 text-xs font-bold mt-2 uppercase tracking-[0.2em]">Retail-Matched Standard: Made In India</p>
-        </div>
+    <!-- Floating Voice Controller -->
+    <div id="status-toast" class="status-toast">Listening...</div>
+    <div class="voice-fab">
+        <button id="mic-btn" onclick="startVoice()" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-2xl hover:bg-blue-500 transition-all active:scale-90">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4z"></path>
+                <path d="M4 8a1 1 0 011 1 5 5 0 0010 0 1 1 0 112 0 7 7 0 01-14 0 1 1 0 011-1zM10 13a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1z"></path>
+            </svg>
+        </button>
+    </div>
 
-        <div class="glass-card rounded-[2.5rem] p-6 md:p-10 mb-8">
-            <!-- Category Tabs -->
-            <div class="grid grid-cols-3 gap-2 bg-slate-900/50 p-1.5 rounded-2xl mb-8">
-                <button onclick="setType('men')" id="btn-men" class="active-tab py-3 rounded-xl font-bold transition-all text-sm uppercase">Men</button>
-                <button onclick="setType('women')" id="btn-women" class="py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300">Women</button>
-                <button onclick="setType('kids')" id="btn-kids" class="py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300">Kids</button>
+    <div class="w-full max-w-xl space-y-6">
+        <!-- Minimal Header -->
+        <header class="text-center space-y-1">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tighter uppercase bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                Step Fit Pro
+            </h1>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">Retail Standard Calculator</p>
+        </header>
+
+        <!-- Main Conversion Card -->
+        <main class="glass-card rounded-[2rem] p-5 md:p-8 space-y-6">
+            <!-- Tabs -->
+            <div class="flex p-1 bg-slate-900/80 rounded-xl">
+                <button onclick="setType('men')" id="btn-men" class="flex-1 py-2.5 rounded-lg text-xs font-bold uppercase transition-all active-tab">Men</button>
+                <button onclick="setType('women')" id="btn-women" class="flex-1 py-2.5 rounded-lg text-xs font-bold uppercase transition-all text-slate-500">Women</button>
+                <button onclick="setType('kids')" id="btn-kids" class="flex-1 py-2.5 rounded-lg text-xs font-bold uppercase transition-all text-slate-500">Kids</button>
             </div>
 
-            <!-- Voice Assistant Interface -->
-            <div class="mb-8 flex items-center justify-between bg-slate-900/40 p-5 rounded-3xl border border-white/5">
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Smart Assistant</span>
-                    <span id="voice-status" class="text-xs text-slate-400 font-medium mt-1">Tap mic and speak size (e.g. "Size 8")</span>
+            <!-- Inputs -->
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Master CM -->
+                <div class="input-container rounded-2xl p-4 space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-blue-400 uppercase tracking-widest">Foot Length (CM)</span>
+                        <span id="range-hint" class="text-[8px] text-slate-600 font-bold">24.0-29.3</span>
+                    </div>
+                    <input type="number" step="0.1" id="size-cm" placeholder="0.0" 
+                        class="w-full bg-transparent text-4xl font-extrabold outline-none text-white placeholder:text-slate-800"
+                        oninput="lookup('cm', this.value)">
                 </div>
-                <button id="mic-btn" onclick="startVoice()" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-blue-500 transition-all active:scale-90">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4z"></path><path d="M4 8a1 1 0 011 1 5 5 0 0010 0 1 1 0 112 0 7 7 0 01-14 0 1 1 0 011-1zM10 13a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1z"></path></svg>
-                </button>
-            </div>
 
-            <!-- Input Grid -->
-            <div class="space-y-6">
-                <!-- Master CM Input -->
-                <div class="relative group">
-                    <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">Measured Foot (CM)</label>
-                    <input type="number" step="0.1" id="size-cm" placeholder="e.g. 25.3" class="w-full bg-blue-500/5 border-2 border-white/10 rounded-2xl px-6 py-5 text-4xl font-extrabold focus:border-blue-500 outline-none transition-all text-blue-100" oninput="lookup('cm', this.value)">
-                    <div class="flex justify-between items-center px-2">
-                        <p id="range-hint" class="text-[9px] text-slate-500 mt-2 uppercase font-bold tracking-wider">Range: 24.0 - 29.3 cm</p>
-                        <span class="safety-badge">Safety Fit: Precision Lookup</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="input-container rounded-2xl p-3 space-y-1">
+                        <span class="text-[9px] font-bold text-orange-400 uppercase tracking-widest">India / UK</span>
+                        <input type="number" step="0.5" id="size-in" placeholder="0" 
+                            class="w-full bg-transparent text-xl font-bold outline-none text-white"
+                            oninput="lookup('in', this.value)">
+                    </div>
+                    <div class="input-container rounded-2xl p-3 space-y-1">
+                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">US / CA</span>
+                        <input type="number" step="0.5" id="size-us" placeholder="0" 
+                            class="w-full bg-transparent text-xl font-bold outline-none text-white"
+                            oninput="lookup('us', this.value)">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="relative">
-                        <label class="text-[10px] font-bold text-orange-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">India / UK Size</label>
-                        <input type="number" step="0.5" id="size-in" class="w-full bg-orange-500/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-orange-500 outline-none transition-all text-orange-100" oninput="lookup('in', this.value)">
-                    </div>
-                    <div class="relative">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">US / Canada (CA)</label>
-                        <input type="number" step="0.5" id="size-us" class="w-full bg-slate-900/40 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-blue-500 outline-none transition-all" oninput="lookup('us', this.value)">
-                    </div>
-                </div>
-
-                <div class="relative">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">EURO (EU) Size</label>
-                    <input type="number" step="1" id="size-eu" class="w-full bg-slate-900/40 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-blue-500 outline-none transition-all" oninput="lookup('eu', this.value)">
+                <div class="input-container rounded-2xl p-3 space-y-1">
+                    <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Europe (EU)</span>
+                    <input type="number" step="1" id="size-eu" placeholder="0" 
+                        class="w-full bg-transparent text-xl font-bold outline-none text-white"
+                        oninput="lookup('eu', this.value)">
                 </div>
             </div>
 
-            <button onclick="clearAll()" class="mt-10 w-full py-4 rounded-2xl border-2 border-slate-700 font-bold text-slate-500 uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2 group">
-                <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Reset Calculation
+            <!-- Clear Action -->
+            <button onclick="clearAll()" class="w-full py-3 rounded-xl bg-slate-800/40 border border-slate-700/50 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white hover:bg-red-500/20 transition-all">
+                Reset All
             </button>
-        </div>
+        </main>
 
-        <!-- Reference Table -->
-        <div class="glass-card rounded-[2.5rem] p-6 md:p-8 mb-8">
-            <h2 class="text-lg font-extrabold mb-6 flex items-center gap-3 uppercase tracking-tighter">
-                <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
-                Official Reference Data
-            </h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="text-slate-500 border-b border-white/5">
-                            <th class="py-4 font-bold uppercase tracking-widest">CM (Mondo)</th>
-                            <th class="py-4 font-bold uppercase tracking-widest">EURO (Paris)</th>
-                            <th class="py-4 font-bold uppercase tracking-widest">US / CA</th>
-                            <th class="py-4 font-bold uppercase tracking-widest text-orange-400">INDIAN/UK</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body" class="text-slate-300 font-medium"></tbody>
-                </table>
+        <!-- Dynamic Reference (Collapsible for Clutter-free UI) -->
+        <section class="space-y-3">
+            <button onclick="toggleSection('ref-table')" class="w-full flex items-center justify-between px-4 py-3 bg-slate-900/40 rounded-xl border border-white/5 group">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-white transition-colors">Retail Reference Chart</span>
+                <svg id="arrow-ref" class="w-4 h-4 text-slate-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+            <div id="ref-table" class="hidden overflow-hidden transition-all duration-300">
+                <div class="glass-card rounded-2xl p-4">
+                    <div class="overflow-x-auto no-scrollbar">
+                        <table class="w-full text-[10px] text-left">
+                            <thead class="text-slate-500 border-b border-white/5 uppercase">
+                                <tr>
+                                    <th class="pb-2">CM</th>
+                                    <th class="pb-2">EU</th>
+                                    <th class="pb-2">US</th>
+                                    <th class="pb-2 text-orange-400">IN</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="text-slate-400"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Signature Footer -->
-        <div class="text-center py-8 border-t border-white/5">
-            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em] block mb-2">Designed By</span>
-            <span class="text-2xl font-black text-slate-200 tracking-tighter">ARVIND KUMAR SHUKLA</span>
-            <div class="mt-3 flex items-center justify-center gap-3">
-                <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                <a href="tel:9616417485" class="text-blue-500 font-extrabold text-sm hover:text-blue-400 transition-all">9616417485</a>
+            <button onclick="toggleSection('standards')" class="w-full flex items-center justify-between px-4 py-3 bg-slate-900/40 rounded-xl border border-white/5 group">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-white transition-colors">International Standards</span>
+                <svg id="arrow-std" class="w-4 h-4 text-slate-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+            <div id="standards" class="hidden space-y-2 p-1">
+                <div class="grid grid-cols-2 gap-2 text-[9px] uppercase tracking-tighter">
+                    <div class="bg-slate-900/60 p-3 rounded-lg border border-white/5">
+                        <p class="text-blue-400 font-bold mb-1">MondoPoint</p>
+                        <p class="text-slate-500 leading-tight">Metric length in CM/MM.</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-lg border border-white/5">
+                        <p class="text-orange-400 font-bold mb-1">Barleycorn</p>
+                        <p class="text-slate-500 leading-tight">UK/IN: 1 size = 1/3 inch.</p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Minimal Footer -->
+        <footer class="text-center pt-8 opacity-40 hover:opacity-100 transition-opacity">
+            <p class="text-[9px] font-bold uppercase tracking-[0.3em] mb-1">Arvind Kumar Shukla</p>
+            <a href="tel:9616417485" class="text-xs font-bold text-blue-500">9616417485</a>
+        </footer>
     </div>
 
     <script>
@@ -178,43 +244,41 @@
             currentType = t;
             ['men', 'women', 'kids'].forEach(b => {
                 const el = document.getElementById('btn-'+b);
-                if (el) {
-                    el.className = (b===t) ? 'active-tab py-3 rounded-xl font-bold transition-all text-sm uppercase' : 'py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300';
-                }
+                el.className = (b===t) ? 'flex-1 py-2.5 rounded-lg text-xs font-bold uppercase transition-all active-tab' : 'flex-1 py-2.5 rounded-lg text-xs font-bold uppercase transition-all text-slate-500';
             });
             const range = masterData[t];
-            const hintEl = document.getElementById('range-hint');
-            if (hintEl) hintEl.innerText = `Range: ${range[0].cm} - ${range[range.length-1].cm} cm`;
+            document.getElementById('range-hint').innerText = `${range[0].cm}-${range[range.length-1].cm}`;
             renderTable();
             clearAll();
         }
 
         function renderTable() {
             const body = document.getElementById('table-body');
-            if (!body) return;
             body.innerHTML = masterData[currentType].map(row => `
-                <tr class="border-b border-white/5 transition-colors">
-                    <td class="py-4 font-bold text-blue-400">${row.cm}</td>
-                    <td class="py-4">${row.eu}</td>
-                    <td class="py-4">${row.us}</td>
-                    <td class="py-4 text-orange-400 font-bold">${row.in}</td>
+                <tr class="border-b border-white/5">
+                    <td class="py-2 text-blue-400 font-bold">${row.cm}</td>
+                    <td class="py-2">${row.eu}</td>
+                    <td class="py-2">${row.us}</td>
+                    <td class="py-2 text-orange-400 font-bold">${row.in}</td>
                 </tr>
             `).join('');
         }
 
+        function toggleSection(id) {
+            const el = document.getElementById(id);
+            const arrow = document.getElementById('arrow-' + (id.split('-')[0]));
+            el.classList.toggle('hidden');
+            if(arrow) arrow.classList.toggle('rotate-180');
+        }
+
         function lookup(source, val) {
-            if(val === undefined || val === null || val === "") return;
+            if(val === "") return;
             const v = parseFloat(val);
-            if (isNaN(v)) return;
             const dataset = masterData[currentType];
-            
             let match;
             if (source === 'cm') {
-                // Rounding logic for CM: Find the nearest or next size up
-                match = dataset.find(d => d.cm >= v);
-                if (!match) match = dataset[dataset.length - 1];
+                match = dataset.find(d => d.cm >= v) || dataset[dataset.length-1];
             } else {
-                // Direct lookup or closest for discrete values
                 match = dataset.find(d => d[source] == v) || dataset.reduce((prev, curr) => Math.abs(curr[source] - v) < Math.abs(prev[source] - v) ? curr : prev);
             }
             if(match) updateFields(match);
@@ -224,69 +288,44 @@
             const ids = ['cm', 'in', 'us', 'eu'];
             ids.forEach(id => {
                 const el = document.getElementById('size-' + id);
-                if (el && document.activeElement !== el) {
-                    el.value = data[id];
-                }
+                if (document.activeElement !== el) el.value = data[id];
             });
         }
 
         function clearAll() {
-            ['cm', 'in', 'us', 'eu'].forEach(id => {
-                const el = document.getElementById('size-'+id);
-                if (el) el.value = '';
-            });
-            const statusEl = document.getElementById('voice-status');
-            if (statusEl) statusEl.innerText = "Tap mic and speak size";
+            ['cm', 'in', 'us', 'eu'].forEach(id => document.getElementById('size-'+id).value = '');
         }
 
         function startVoice() {
-            if(!recognition) {
-                alert("Speech recognition is not supported in your browser. Please try Chrome or Edge.");
-                return;
-            }
-            try {
-                recognition.start();
-                recognition.onstart = () => {
-                    const btn = document.getElementById('mic-btn');
-                    const status = document.getElementById('voice-status');
-                    if (btn) btn.classList.add('voice-pulse');
-                    if (status) status.innerText = "LISTENING...";
-                };
-                recognition.onresult = (e) => {
-                    const transcript = e.results[0][0].transcript;
-                    const numMatch = transcript.match(/\d+(\.\d+)?/);
-                    if(numMatch) {
-                        const val = numMatch[0];
-                        const status = document.getElementById('voice-status');
-                        if (parseFloat(val) > 15) {
-                            const cmEl = document.getElementById('size-cm');
-                            if (cmEl) cmEl.value = val;
-                            lookup('cm', val);
-                        } else {
-                            const inEl = document.getElementById('size-in');
-                            if (inEl) inEl.value = val;
-                            lookup('in', val);
-                        }
-                        if (status) status.innerText = "PROCESSED: " + val;
+            if(!recognition) return alert("Mic not supported");
+            recognition.start();
+            recognition.onstart = () => {
+                document.getElementById('mic-btn').classList.add('voice-pulse');
+                document.getElementById('status-toast').innerText = "Listening...";
+                document.getElementById('status-toast').classList.add('active');
+            };
+            recognition.onresult = (e) => {
+                const transcript = e.results[0][0].transcript;
+                const num = transcript.match(/\d+(\.\d+)?/);
+                if(num) {
+                    const val = num[0];
+                    if (parseFloat(val) > 15) {
+                        document.getElementById('size-cm').value = val;
+                        lookup('cm', val);
+                    } else {
+                        document.getElementById('size-in').value = val;
+                        lookup('in', val);
                     }
-                };
-                recognition.onend = () => {
-                    const btn = document.getElementById('mic-btn');
-                    if (btn) btn.classList.remove('voice-pulse');
-                };
-                recognition.onerror = (e) => {
-                    console.error("Speech Error:", e.error);
-                    const status = document.getElementById('voice-status');
-                    if (status) status.innerText = "Error accessing mic. Check permissions.";
-                };
-            } catch (err) {
-                console.error("Speech Start Error:", err);
-            }
+                    document.getElementById('status-toast').innerText = "Found: " + val;
+                }
+            };
+            recognition.onend = () => {
+                document.getElementById('mic-btn').classList.remove('voice-pulse');
+                setTimeout(() => document.getElementById('status-toast').classList.remove('active'), 2000);
+            };
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            setType('men');
-        });
+        document.addEventListener('DOMContentLoaded', () => setType('men'));
     </script>
 </body>
 </html>
