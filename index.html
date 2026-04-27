@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,264 +8,287 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        body {
-            background-color: #0f172a;
-            font-family: 'Outfit', sans-serif;
+        body { 
+            background-color: #0b1120; 
+            font-family: 'Outfit', sans-serif; 
             color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
         }
-        .precision-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
         }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
         }
-        .active-tab {
-            background-color: #2563eb;
-            color: white;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        .active-tab { 
+            background-color: #2563eb; 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); 
         }
-        .input-group label {
-            transition: all 0.2s ease;
+        .voice-pulse { 
+            animation: pulse 1.5s infinite; 
         }
-        .input-group:focus-within label {
-            color: #60a5fa;
+        @keyframes pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
         }
-        .btn-clear {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .safety-badge { 
+            font-size: 9px; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            background: rgba(34, 197, 94, 0.2); 
+            color: #4ade80; 
+            display: inline-block; 
+            margin-top: 4px; 
         }
-        .btn-clear:hover {
-            background-color: #ef4444;
-            color: white;
-            transform: translateY(-1px);
-        }
-        .standard-tag {
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #94a3b8;
-            margin-top: 4px;
-            display: inline-block;
-        }
-        .highlight-border {
-            border-color: #3b82f6 !important;
-        }
+        tr:hover { background: rgba(59, 130, 246, 0.05); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen py-8 px-4 flex flex-col items-center">
 
-    <div class="max-w-xl w-full py-8">
-        <!-- Brand Header -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent uppercase tracking-tighter">
-                Precision Step Fit
-            </h1>
-            <p class="text-slate-400 text-sm font-medium mt-1 uppercase tracking-widest">Scientific Size Conversion Engine</p>
+    <div class="max-w-2xl w-full">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent tracking-tighter uppercase">Precision Step Fit</h1>
+            <p class="text-slate-500 text-xs font-bold mt-2 uppercase tracking-[0.2em]">Retail-Matched Standard: Made In India</p>
         </div>
 
-        <div class="precision-card rounded-3xl p-6 md:p-8">
-            <!-- Mode Switcher -->
-            <div class="grid grid-cols-3 gap-2 bg-slate-900/50 p-1.5 rounded-2xl mb-6">
-                <button onclick="setType('men')" id="btn-men" class="active-tab py-2.5 rounded-xl font-bold transition-all text-sm">MEN</button>
-                <button onclick="setType('women')" id="btn-women" class="py-2.5 rounded-xl font-bold transition-all text-sm text-slate-500 hover:text-slate-300">WOMEN</button>
-                <button onclick="setType('kids')" id="btn-kids" class="py-2.5 rounded-xl font-bold transition-all text-sm text-slate-500 hover:text-slate-300">KIDS</button>
+        <div class="glass-card rounded-[2.5rem] p-6 md:p-10 mb-8">
+            <!-- Category Tabs -->
+            <div class="grid grid-cols-3 gap-2 bg-slate-900/50 p-1.5 rounded-2xl mb-8">
+                <button onclick="setType('men')" id="btn-men" class="active-tab py-3 rounded-xl font-bold transition-all text-sm uppercase">Men</button>
+                <button onclick="setType('women')" id="btn-women" class="py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300">Women</button>
+                <button onclick="setType('kids')" id="btn-kids" class="py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300">Kids</button>
             </div>
 
-            <div class="mb-6">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Calculate by any standard below:</p>
+            <!-- Voice Assistant Interface -->
+            <div class="mb-8 flex items-center justify-between bg-slate-900/40 p-5 rounded-3xl border border-white/5">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Smart Assistant</span>
+                    <span id="voice-status" class="text-xs text-slate-400 font-medium mt-1">Tap mic and speak size (e.g. "Size 8")</span>
+                </div>
+                <button id="mic-btn" onclick="startVoice()" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-blue-500 transition-all active:scale-90">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4z"></path><path d="M4 8a1 1 0 011 1 5 5 0 0010 0 1 1 0 112 0 7 7 0 01-14 0 1 1 0 011-1zM10 13a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1z"></path></svg>
+                </button>
             </div>
 
-            <!-- Conversion Grid -->
-            <div class="space-y-5">
-                <!-- Row 1: Primary Inputs -->
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- EU Input -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">Europe (EU)</label>
-                        <input type="number" step="0.5" id="size-eu" placeholder="EU Size" 
-                            class="w-full bg-slate-900/40 border-2 border-slate-700 rounded-xl px-4 py-3 text-xl font-bold focus:border-blue-500 outline-none transition-all"
-                            oninput="syncFromEU(this.value)">
-                        <span class="standard-tag">Standard: Paris Point</span>
-                    </div>
-
-                    <!-- UK Input -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">United Kingdom (UK)</label>
-                        <input type="number" step="0.5" id="size-uk" placeholder="UK Size" 
-                            class="w-full bg-slate-900/40 border-2 border-slate-700 rounded-xl px-4 py-3 text-xl font-bold focus:border-blue-500 outline-none transition-all"
-                            oninput="syncFromUK(this.value)">
-                        <span class="standard-tag">Standard: Barleycorn</span>
+            <!-- Input Grid -->
+            <div class="space-y-6">
+                <!-- Master CM Input -->
+                <div class="relative group">
+                    <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">Measured Foot (CM)</label>
+                    <input type="number" step="0.1" id="size-cm" placeholder="e.g. 25.3" class="w-full bg-blue-500/5 border-2 border-white/10 rounded-2xl px-6 py-5 text-4xl font-extrabold focus:border-blue-500 outline-none transition-all text-blue-100" oninput="lookup('cm', this.value)">
+                    <div class="flex justify-between items-center px-2">
+                        <p id="range-hint" class="text-[9px] text-slate-500 mt-2 uppercase font-bold tracking-wider">Range: 24.0 - 29.3 cm</p>
+                        <span class="safety-badge">Safety Fit: Precision Lookup</span>
                     </div>
                 </div>
 
-                <!-- Row 2: North American Standards -->
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- US Input -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">United States (US)</label>
-                        <input type="number" step="0.5" id="size-us" placeholder="US Size" 
-                            class="w-full bg-slate-900/40 border-2 border-slate-700 rounded-xl px-4 py-3 text-xl font-bold focus:border-blue-500 outline-none transition-all"
-                            oninput="syncFromUS(this.value)">
-                        <span class="standard-tag">Standard: Brannock</span>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label class="text-[10px] font-bold text-orange-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">India / UK Size</label>
+                        <input type="number" step="0.5" id="size-in" class="w-full bg-orange-500/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-orange-500 outline-none transition-all text-orange-100" oninput="lookup('in', this.value)">
                     </div>
-
-                    <!-- CA Input -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">Canada (CA)</label>
-                        <input type="number" step="0.5" id="size-ca" placeholder="CA Size" 
-                            class="w-full bg-slate-900/40 border-2 border-slate-700 rounded-xl px-4 py-3 text-xl font-bold focus:border-blue-500 outline-none transition-all"
-                            oninput="syncFromCA(this.value)">
-                        <span class="standard-tag">Standard: Brannock</span>
+                    <div class="relative">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">US / Canada (CA)</label>
+                        <input type="number" step="0.5" id="size-us" class="w-full bg-slate-900/40 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-blue-500 outline-none transition-all" oninput="lookup('us', this.value)">
                     </div>
                 </div>
 
-                <!-- Row 3: India & Metric -->
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- IN Input -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-orange-400 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">India (IN)</label>
-                        <input type="number" step="0.5" id="size-in" placeholder="IN Size" 
-                            class="w-full bg-orange-500/5 border-2 border-orange-500/30 rounded-xl px-4 py-3 text-xl font-bold focus:border-orange-500 outline-none transition-all text-orange-100"
-                            oninput="syncFromIN(this.value)">
-                        <span class="standard-tag text-orange-400/70">Standard: UK Scale</span>
-                    </div>
-
-                    <!-- Foot Length (CM) -->
-                    <div class="relative group input-group">
-                        <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest absolute left-4 -top-2 bg-[#1e293b] px-2 z-10">Foot Length (CM)</label>
-                        <input type="number" step="0.1" id="size-cm" placeholder="Length" 
-                            class="w-full bg-blue-500/5 border-2 border-blue-500/30 rounded-xl px-4 py-3 text-xl font-bold focus:border-blue-500 outline-none transition-all text-blue-100"
-                            oninput="syncFromCM(this.value)">
-                        <span class="standard-tag text-blue-400/70">Standard: MondoPoint</span>
-                    </div>
+                <div class="relative">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute left-5 -top-2 bg-[#172133] px-2 z-10">EURO (EU) Size</label>
+                    <input type="number" step="1" id="size-eu" class="w-full bg-slate-900/40 border-2 border-white/10 rounded-2xl px-6 py-4 text-2xl font-bold focus:border-blue-500 outline-none transition-all" oninput="lookup('eu', this.value)">
                 </div>
             </div>
 
-            <!-- Clear Action -->
-            <button onclick="clearAll()" class="btn-clear mt-8 w-full py-4 rounded-2xl border-2 border-slate-700 font-bold text-slate-400 uppercase tracking-widest text-xs flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                Clear Results
+            <button onclick="clearAll()" class="mt-10 w-full py-4 rounded-2xl border-2 border-slate-700 font-bold text-slate-500 uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2 group">
+                <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Reset Calculation
             </button>
+        </div>
 
-            <!-- Technical Methodology -->
-            <div class="mt-8 pt-6 border-t border-slate-700/50">
-                <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-4">Methodology & Standards</h3>
-                <div class="grid grid-cols-1 gap-3 text-[11px] text-slate-400">
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-700/30 flex justify-between items-center">
-                        <span><span class="text-slate-200 font-bold">EU Calculation:</span> Paris Point System</span>
-                        <span class="text-blue-500 font-mono italic">1 size = 0.667cm</span>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-700/30 flex justify-between items-center">
-                        <span><span class="text-slate-200 font-bold">UK/IN Calculation:</span> Barleycorn Units</span>
-                        <span class="text-blue-500 font-mono italic">1 size = 0.33in</span>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-700/30 flex justify-between items-center">
-                        <span><span class="text-slate-200 font-bold">US/CA Calculation:</span> Brannock Device</span>
-                        <span class="text-blue-500 font-mono italic">Offset based</span>
-                    </div>
-                </div>
+        <!-- Reference Table -->
+        <div class="glass-card rounded-[2.5rem] p-6 md:p-8 mb-8">
+            <h2 class="text-lg font-extrabold mb-6 flex items-center gap-3 uppercase tracking-tighter">
+                <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
+                Official Reference Data
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="text-slate-500 border-b border-white/5">
+                            <th class="py-4 font-bold uppercase tracking-widest">CM (Mondo)</th>
+                            <th class="py-4 font-bold uppercase tracking-widest">EURO (Paris)</th>
+                            <th class="py-4 font-bold uppercase tracking-widest">US / CA</th>
+                            <th class="py-4 font-bold uppercase tracking-widest text-orange-400">INDIAN/UK</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="text-slate-300 font-medium"></tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Professional Footer -->
-        <div class="mt-8 text-center">
-            <div class="inline-flex flex-col items-center">
-                <span class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">Designer & Developer</span>
-                <span class="text-lg font-bold text-slate-300">Arvind Kumar Shukla</span>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="w-1 h-1 bg-blue-500 rounded-full"></span>
-                    <a href="tel:9616417485" class="text-blue-500 font-semibold text-sm hover:text-blue-400 transition-colors">9616417485</a>
-                    <span class="w-1 h-1 bg-blue-500 rounded-full"></span>
-                </div>
+        <!-- Signature Footer -->
+        <div class="text-center py-8 border-t border-white/5">
+            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em] block mb-2">Designed By</span>
+            <span class="text-2xl font-black text-slate-200 tracking-tighter">ARVIND KUMAR SHUKLA</span>
+            <div class="mt-3 flex items-center justify-center gap-3">
+                <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                <a href="tel:9616417485" class="text-blue-500 font-extrabold text-sm hover:text-blue-400 transition-all">9616417485</a>
             </div>
         </div>
     </div>
 
     <script>
         let currentType = 'men';
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+        const masterData = {
+            men: [
+                {cm: 24.0, eu: 38, us: 5, in: 4}, {cm: 24.7, eu: 39, us: 6, in: 5},
+                {cm: 25.3, eu: 40, us: 7, in: 6}, {cm: 26.0, eu: 41, us: 8, in: 7},
+                {cm: 26.7, eu: 42, us: 9, in: 8}, {cm: 27.3, eu: 43, us: 10, in: 9},
+                {cm: 28.0, eu: 44, us: 11, in: 10}, {cm: 28.7, eu: 45, us: 12, in: 11},
+                {cm: 29.3, eu: 46, us: 13, in: 12}
+            ],
+            women: [
+                {cm: 22.0, eu: 35, us: 4, in: 2}, {cm: 22.7, eu: 36, us: 5, in: 3},
+                {cm: 23.3, eu: 37, us: 6, in: 4}, {cm: 24.0, eu: 38, us: 6, in: 5},
+                {cm: 24.7, eu: 39, us: 7, in: 6}, {cm: 25.3, eu: 40, us: 8, in: 7},
+                {cm: 26.0, eu: 41, us: 9, in: 8}, {cm: 26.7, eu: 42, us: 10, in: 9},
+                {cm: 27.3, eu: 43, us: 11, in: 10}
+            ],
+            kids: [
+                {cm: 14.0, eu: 23, us: 6, in: 5}, {cm: 14.7, eu: 24, us: 7, in: 6},
+                {cm: 15.3, eu: 25, us: 8, in: 7}, {cm: 16.0, eu: 26, us: 9, in: 8},
+                {cm: 16.7, eu: 27, us: 10, in: 9}, {cm: 17.3, eu: 28, us: 11, in: 10},
+                {cm: 18.0, eu: 29, us: 12, in: 11}, {cm: 18.7, eu: 30, us: 13, in: 12},
+                {cm: 19.3, eu: 31, us: 1, in: 13}, {cm: 20.0, eu: 32, us: 2, in: 1},
+                {cm: 20.7, eu: 33, us: 3, in: 2}, {cm: 21.3, eu: 34, us: 4, in: 3}
+            ]
+        };
 
         function setType(t) {
             currentType = t;
-            ['men', 'women', 'kids'].forEach(btn => {
-                const el = document.getElementById('btn-' + btn);
-                el.className = (btn === t) 
-                    ? 'active-tab py-2.5 rounded-xl font-bold transition-all text-sm' 
-                    : 'py-2.5 rounded-xl font-bold transition-all text-sm text-slate-500 hover:text-slate-300';
-            });
-            const currentCM = document.getElementById('size-cm').value;
-            if(currentCM) syncFromCM(currentCM);
-        }
-
-        function syncFromCM(cm) {
-            if(!cm) return clearAll();
-            const val = parseFloat(cm);
-            const inches = val / 2.54;
-            let us, uk, eu;
-
-            if (currentType === 'kids') {
-                us = (inches * 3) - 9.75;
-                uk = (inches * 3) - 10;
-            } else {
-                us = currentType === 'men' ? (inches * 3) - 22 : (inches * 3) - 21;
-                uk = (inches * 3) - 23;
-            }
-            eu = (val + 1.5) / 0.667;
-
-            updateFields(us, uk, eu, val);
-        }
-
-        // Calculation entry points for specific standards
-        function syncFromEU(val) {
-            if(!val) return clearAll();
-            const v = parseFloat(val);
-            const cm = (v * 0.667) - 1.5;
-            syncFromCM(cm.toFixed(2));
-        }
-
-        function syncFromUK(val) {
-            if(!val) return clearAll();
-            const v = parseFloat(val);
-            let inches = (currentType === 'kids') ? (v + 10) / 3 : (v + 23) / 3;
-            syncFromCM((inches * 2.54).toFixed(2));
-        }
-
-        function syncFromIN(val) { syncFromUK(val); }
-
-        function syncFromUS(val) {
-            if(!val) return clearAll();
-            const v = parseFloat(val);
-            let inches = (currentType === 'kids') ? (v + 9.75) / 3 : (currentType === 'men' ? (v + 22) / 3 : (v + 21) / 3);
-            syncFromCM((inches * 2.54).toFixed(2));
-        }
-
-        function syncFromCA(val) { syncFromUS(val); }
-
-        function updateFields(us, uk, eu, cm) {
-            const round = (n) => (Math.round(n * 2) / 2).toFixed(1);
-            
-            // Set values if not currently active
-            const map = {
-                'size-us': round(us),
-                'size-ca': round(us),
-                'size-uk': round(uk),
-                'size-in': round(uk),
-                'size-eu': round(eu),
-                'size-cm': cm.toFixed(1)
-            };
-
-            for (const [id, value] of Object.entries(map)) {
-                if (document.activeElement.id !== id) {
-                    document.getElementById(id).value = value;
+            ['men', 'women', 'kids'].forEach(b => {
+                const el = document.getElementById('btn-'+b);
+                if (el) {
+                    el.className = (b===t) ? 'active-tab py-3 rounded-xl font-bold transition-all text-sm uppercase' : 'py-3 rounded-xl font-bold transition-all text-sm text-slate-500 uppercase hover:text-slate-300';
                 }
+            });
+            const range = masterData[t];
+            const hintEl = document.getElementById('range-hint');
+            if (hintEl) hintEl.innerText = `Range: ${range[0].cm} - ${range[range.length-1].cm} cm`;
+            renderTable();
+            clearAll();
+        }
+
+        function renderTable() {
+            const body = document.getElementById('table-body');
+            if (!body) return;
+            body.innerHTML = masterData[currentType].map(row => `
+                <tr class="border-b border-white/5 transition-colors">
+                    <td class="py-4 font-bold text-blue-400">${row.cm}</td>
+                    <td class="py-4">${row.eu}</td>
+                    <td class="py-4">${row.us}</td>
+                    <td class="py-4 text-orange-400 font-bold">${row.in}</td>
+                </tr>
+            `).join('');
+        }
+
+        function lookup(source, val) {
+            if(val === undefined || val === null || val === "") return;
+            const v = parseFloat(val);
+            if (isNaN(v)) return;
+            const dataset = masterData[currentType];
+            
+            let match;
+            if (source === 'cm') {
+                // Rounding logic for CM: Find the nearest or next size up
+                match = dataset.find(d => d.cm >= v);
+                if (!match) match = dataset[dataset.length - 1];
+            } else {
+                // Direct lookup or closest for discrete values
+                match = dataset.find(d => d[source] == v) || dataset.reduce((prev, curr) => Math.abs(curr[source] - v) < Math.abs(prev[source] - v) ? curr : prev);
             }
+            if(match) updateFields(match);
+        }
+
+        function updateFields(data) {
+            const ids = ['cm', 'in', 'us', 'eu'];
+            ids.forEach(id => {
+                const el = document.getElementById('size-' + id);
+                if (el && document.activeElement !== el) {
+                    el.value = data[id];
+                }
+            });
         }
 
         function clearAll() {
-            ['us', 'uk', 'eu', 'cm', 'in', 'ca'].forEach(id => document.getElementById(id).value = '');
+            ['cm', 'in', 'us', 'eu'].forEach(id => {
+                const el = document.getElementById('size-'+id);
+                if (el) el.value = '';
+            });
+            const statusEl = document.getElementById('voice-status');
+            if (statusEl) statusEl.innerText = "Tap mic and speak size";
         }
+
+        function startVoice() {
+            if(!recognition) {
+                alert("Speech recognition is not supported in your browser. Please try Chrome or Edge.");
+                return;
+            }
+            try {
+                recognition.start();
+                recognition.onstart = () => {
+                    const btn = document.getElementById('mic-btn');
+                    const status = document.getElementById('voice-status');
+                    if (btn) btn.classList.add('voice-pulse');
+                    if (status) status.innerText = "LISTENING...";
+                };
+                recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    const numMatch = transcript.match(/\d+(\.\d+)?/);
+                    if(numMatch) {
+                        const val = numMatch[0];
+                        const status = document.getElementById('voice-status');
+                        if (parseFloat(val) > 15) {
+                            const cmEl = document.getElementById('size-cm');
+                            if (cmEl) cmEl.value = val;
+                            lookup('cm', val);
+                        } else {
+                            const inEl = document.getElementById('size-in');
+                            if (inEl) inEl.value = val;
+                            lookup('in', val);
+                        }
+                        if (status) status.innerText = "PROCESSED: " + val;
+                    }
+                };
+                recognition.onend = () => {
+                    const btn = document.getElementById('mic-btn');
+                    if (btn) btn.classList.remove('voice-pulse');
+                };
+                recognition.onerror = (e) => {
+                    console.error("Speech Error:", e.error);
+                    const status = document.getElementById('voice-status');
+                    if (status) status.innerText = "Error accessing mic. Check permissions.";
+                };
+            } catch (err) {
+                console.error("Speech Start Error:", err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setType('men');
+        });
     </script>
 </body>
 </html>
+
+```
